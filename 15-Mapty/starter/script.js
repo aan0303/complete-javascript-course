@@ -173,6 +173,8 @@ class App {
       )
       .setPopupContent(`${workout.distance}`)
       .openPopup();
+
+    console.log('hi');
   }
 }
 
