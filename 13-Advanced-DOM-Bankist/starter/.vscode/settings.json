@@ -1,0 +1,5 @@
+{
+  "editor.experimental.stickyScroll.enabled": true,
+  "workbench.settings.editor": "json",
+  "workbench.settings.useSplitJSON": true
+}
