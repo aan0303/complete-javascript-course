@@ -82,7 +82,10 @@ class App {
     //Attach event handlers
     form.addEventListener('submit', this.#newWorkout.bind(this));
     inputType.addEventListener('change', this.#toggleElevationField);
-    containerWorkouts.addEventListener('click', this.#moveToPopup.bind(this));
+    containerWorkouts.addEventListener(
+      'click',
+      this.#containerActivity.bind(this)
+    );
   }
 
   #getPosition() {
@@ -221,10 +224,10 @@ class App {
       <div class="workout__buttons">
       <button class="button button__${
         workout.type
-      }"><ion-icon name="trash"></ion-icon></button>
+      } deleteButton"><ion-icon id="delete" name="trash"></ion-icon></button>
       <button class="button button__${
         workout.type
-      }"><ion-icon name="create"></ion-icon></button>
+      } editButton"><ion-icon id="edit" name="create"></ion-icon></button>
       </div>
     <div class="workout__details">
       <span class="workout__icon">${
@@ -272,21 +275,28 @@ class App {
     form.insertAdjacentHTML('afterend', html);
   }
 
-  #moveToPopup(e) {
-    const workoutEl = e.target.closest('.workout');
-    if (!workoutEl) return;
+  #containerActivity(e) {
+    const workoutEl = e.target;
 
-    const workout = this.#workouts.find(
-      work => work.id === workoutEl.dataset.id
-    );
+    if (!e.target) return;
 
-    this.#map.setView(workout.coords, this.#mapZoomLevel, {
-      animate: true,
-      pan: { duration: 1 },
-    });
+    if (workoutEl.id === 'delete') {
+      //deleteWorkout
+      console.log('del');
+    } else if (workoutEl.id === 'edit') {
+      //editWorkout
+      console.log('edit');
+    } else {
+      console.log(workoutEl);
+      const workout = this.#workouts.find(
+        work => work.id === workoutEl.dataset.id
+      );
 
-    //using the public interface
-    // workout.click();
+      this.#map.setView(workout.coords, this.#mapZoomLevel, {
+        animate: true,
+        pan: { duration: 1 },
+      });
+    }
   }
 
   #setLocalStorage() {
