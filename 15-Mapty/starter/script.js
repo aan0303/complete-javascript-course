@@ -118,9 +118,7 @@ class App {
   #showForm(mapE) {
     //Handling clicks on maps
     this.#mapEvent = mapE;
-
-    //Add form
-
+    inputType.value = 'running';
     form.classList.remove('hidden');
     inputDistance.focus();
   }
@@ -174,9 +172,10 @@ class App {
 
       if (
         !validInputs(distance, duration, elevation) ||
-        !allPositive(distance, duration)
+        !allPositive(distance, duration, elevation)
       )
         return alert('Inputs have to be positive number');
+
       workout = new Cycling([lat, lng], distance, duration, elevation);
     }
 
@@ -219,6 +218,14 @@ class App {
       workout.id
     }">
     <h2 class="workout__title">${workout.description}</h2>
+      <div class="workout__buttons">
+      <button class="button button__${
+        workout.type
+      }"><ion-icon name="trash"></ion-icon></button>
+      <button class="button button__${
+        workout.type
+      }"><ion-icon name="create"></ion-icon></button>
+      </div>
     <div class="workout__details">
       <span class="workout__icon">${
         workout.type === 'running' ? '🏃‍♂️' : '🚴‍♀️'

@@ -87,12 +87,34 @@ a:visited {
 .workout__title {
   font-size: 1.7rem;
   font-weight: 600;
-  grid-column: 1 / -1;
+  grid-column-start: span 3;
 }
 
 .workout__details {
   display: flex;
   align-items: baseline;
+}
+
+.workout__buttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  grid-column-start: 4;
+}
+
+.button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 2.2rem;
+}
+
+.button__running {
+  color: #00c46a;
+}
+
+.button__cycling {
+  color: #ffb545;
 }
 
 .workout__icon {
