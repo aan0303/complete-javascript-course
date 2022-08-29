@@ -71,6 +71,7 @@ class App {
   #mapZoomLevel = 13;
   #mapEvent;
   #workouts = [];
+  #markers = [];
 
   constructor() {
     //Get user's position
@@ -82,10 +83,10 @@ class App {
     //Attach event handlers
     form.addEventListener('submit', this.#newWorkout.bind(this));
     inputType.addEventListener('change', this.#toggleElevationField);
-    containerWorkouts.addEventListener(
-      'click',
-      this.#containerActivity.bind(this)
-    );
+    containerWorkouts.addEventListener('click', this.#moveToPopup.bind(this));
+    containerWorkouts.addEventListener('click', e => {
+      if (e.target.closest('.deleteButton')) this.#deleteWorkout(e);
+    });
   }
 
   #getPosition() {
@@ -198,8 +199,29 @@ class App {
     this.#setLocalStorage();
   }
 
+  #deleteWorkout(e) {
+    e.preventDefault();
+
+    const workoutEl = e.target.closest('.workout');
+
+    const workout = this.#workouts.find(
+      work => work.id === workoutEl.dataset.id
+    );
+
+    //find the index
+    const index = this.#workouts.indexOf(workout);
+    this.#workouts.splice(index, 1);
+
+    //remove the marker
+    this.#markers[index].remove();
+
+    //remove the list
+
+    this.#setLocalStorage();
+  }
+
   renderWorkoutMarker(workout) {
-    L.marker(workout.coords)
+    const marker = L.marker(workout.coords)
       .addTo(this.#map)
       .bindPopup(
         L.popup({
@@ -214,6 +236,8 @@ class App {
         `${workout.type === 'running' ? '🏃‍♂️' : '🚴‍♀️'} ${workout.description}`
       )
       .openPopup();
+
+    this.#markers.push(marker);
   }
 
   _renderWorkout(workout) {
@@ -275,28 +299,21 @@ class App {
     form.insertAdjacentHTML('afterend', html);
   }
 
-  #containerActivity(e) {
-    const workoutEl = e.target;
+  #moveToPopup(e) {
+    if (!this.#map) return;
 
-    if (!e.target) return;
+    const workoutEl = e.target.closest('.workout');
 
-    if (workoutEl.id === 'delete') {
-      //deleteWorkout
-      console.log('del');
-    } else if (workoutEl.id === 'edit') {
-      //editWorkout
-      console.log('edit');
-    } else {
-      console.log(workoutEl);
-      const workout = this.#workouts.find(
-        work => work.id === workoutEl.dataset.id
-      );
+    if (!workoutEl) return;
 
-      this.#map.setView(workout.coords, this.#mapZoomLevel, {
-        animate: true,
-        pan: { duration: 1 },
-      });
-    }
+    const workout = this.#workouts.find(
+      work => work.id === workoutEl.dataset.id
+    );
+
+    this.#map.setView(workout.coords, this.#mapZoomLevel, {
+      animate: true,
+      pan: { duration: 1 },
+    });
   }
 
   #setLocalStorage() {
