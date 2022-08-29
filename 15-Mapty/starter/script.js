@@ -71,7 +71,7 @@ class App {
   #mapZoomLevel = 13;
   #mapEvent;
   #workouts = [];
-  #markers = [];
+  markers = [];
 
   constructor() {
     //Get user's position
@@ -123,6 +123,7 @@ class App {
     //Handling clicks on maps
     this.#mapEvent = mapE;
     inputType.value = 'running';
+
     form.classList.remove('hidden');
     inputDistance.focus();
   }
@@ -133,7 +134,11 @@ class App {
       inputCadence.value =
       inputElevation.value =
         '';
+
     form.classList.add('hidden');
+
+    inputElevation.closest('div').classList.add('form__row--hidden');
+    inputCadence.closest('div').classList.remove('form__row--hidden');
   }
 
   #toggleElevationField() {
@@ -213,9 +218,11 @@ class App {
     this.#workouts.splice(index, 1);
 
     //remove the marker
-    this.#markers[index].remove();
+    this.#map.removeLayer(this.markers[index]);
+    this.markers.splice(index, 1);
 
     //remove the list
+    workoutEl.remove();
 
     this.#setLocalStorage();
   }
@@ -237,7 +244,8 @@ class App {
       )
       .openPopup();
 
-    this.#markers.push(marker);
+    this.#map.addLayer(marker);
+    this.markers.push(marker);
   }
 
   _renderWorkout(workout) {
