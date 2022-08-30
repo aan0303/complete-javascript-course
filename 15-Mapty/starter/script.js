@@ -58,6 +58,7 @@ class Cycling extends Workout {
   }
 }
 
+const formEdit = document.querySelector('.formEdit');
 const form = document.querySelector('.form');
 const containerWorkouts = document.querySelector('.workouts');
 const inputType = document.querySelector('.form__input--type');
@@ -81,6 +82,7 @@ class App {
     this.#getLocalStorage();
 
     //Attach event handlers
+    form.addEventListener('submit', this.#newWorkout.bind(this));
     inputType.addEventListener('change', this.#toggleElevationField);
     containerWorkouts.addEventListener('click', this.#moveToPopup.bind(this));
     containerWorkouts.addEventListener('click', e => {
@@ -115,7 +117,6 @@ class App {
     }).addTo(this.#map);
 
     this.#map.on('click', this.#showForm.bind(this));
-    form.addEventListener('submit', this.#newWorkout.bind(this));
 
     this.#workouts.forEach(work => {
       this.renderWorkoutMarker(work);
@@ -128,6 +129,15 @@ class App {
     inputType.value = 'running';
 
     form.classList.remove('hidden');
+    inputDistance.focus();
+  }
+
+  #showEditForm() {
+    //Handling clicks on maps
+
+    inputType.value = 'running';
+
+    formEdit.classList.remove('hidden');
     inputDistance.focus();
   }
 
@@ -234,9 +244,10 @@ class App {
     e.preventDefault();
 
     const workoutEl = e.target.closest('.workout');
-    this.#showForm();
 
-    form.addEventListener('submit', function () {
+    this.#showEditForm();
+
+    formEdit.addEventListener('submit', function () {
       const validInputs = (...inputs) =>
         inputs.every(inp => Number.isFinite(inp));
       const allPositive = (...inputs) => inputs.every(inp => inp > 0);
