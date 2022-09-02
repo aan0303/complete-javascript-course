@@ -8,10 +8,10 @@ const countriesContainer = document.querySelector('.countries');
 function getCountryData(name) {
   const request = new XMLHttpRequest();
   request.open('GET', `https://restcountries.com/v3.1/name/${name}`);
-  request.send();
+  request.responseType = 'json';
 
   request.addEventListener('load', function () {
-    const [data] = JSON.parse(this.responseText);
+    const [data] = request.response;
 
     console.log(data);
     let html = `
@@ -34,6 +34,8 @@ function getCountryData(name) {
     countriesContainer.insertAdjacentHTML('beforeend', html);
     countriesContainer.style.opacity = 1;
   });
+
+  request.send();
 }
 
 getCountryData('Malaysia');
