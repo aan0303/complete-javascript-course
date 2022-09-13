@@ -103,6 +103,34 @@ const renderError = function (msg) {
   // countriesContainer.style.opacity = 1;
 };
 
+const whereAmI = function (lat, lng) {
+  fetch(
+    `https://geocode.xyz/${lat},${lng}?geoit=json&auth=127722282185009e15876662x26378`
+  )
+    .then(responses => {
+      if (!responses.ok) throw new Error(`${responses.status}`);
+      return responses.json();
+    })
+    .then(data => {
+      if (!data.city || !data.country) throw new Error(`Data not found`);
+
+      fetch(`https://restcountries.com/v3.1/name/${data.country}`)
+        .then(responses => {
+          if (!responses.ok) throw new Error(`${error} ${responses.status}`);
+          return responses.json();
+        })
+        .then(data => renderCountry(data[0]));
+
+      console.log(`You are in ${data.city}, ${data.country}`);
+    })
+    .catch(err => renderError(`${err}`))
+    .finally(() => (countriesContainer.style.opacity = 1));
+};
+
+whereAmI(52.508, 13.381);
+whereAmI(19.037, 72.873);
+whereAmI(-33.933, 18.474);
+
 const getJSON = function (url, error = 'Something went wrong') {
   return fetch(`${url}`).then(response => {
     if (!response.ok) throw new Error(`${error} ${response.status}`);
@@ -134,6 +162,6 @@ const getCountryData = function (country) {
     });
 };
 
-btn.addEventListener('click', function () {
-  getCountryData('Singapore');
-});
+// btn.addEventListener('click', function () {
+//   whereAmI(52.508, 13.381);
+// });
