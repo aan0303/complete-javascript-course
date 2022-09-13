@@ -178,11 +178,10 @@ Promise.resolve(`Resolved promise 2`).then(res => {
 
 console.log('Test end');
 
-*/
 
 const lotteryPromise = new Promise(function (resolve, reject) {
   console.log(`Lottery draw is happening`);
-
+  
   setTimeout(function () {
     if (Math.random() >= 0.5) {
       resolve(`You WIN`);
@@ -202,11 +201,56 @@ const wait = function (seconds) {
 };
 
 wait(2)
-  .then(() => {
-    console.log('I waited for 2 seconds');
-    return wait(1);
-  })
-  .then(() => console.log(`I waited for 1 second`));
+.then(() => {
+  console.log('I waited for 2 seconds');
+  return wait(1);
+})
+.then(() => console.log(`I waited for 1 second`));
 
 Promise.resolve('abc').then(x => console.log(x));
 Promise.reject('abc').catch(err => console.error(err));
+
+
+// navigator.geolocation.getCurrentPosition(
+//   position => console.log(position),
+//   err => console.error(err)
+// );
+
+const getPosition = function () {
+  return new Promise(function (resolve, reject) {
+    navigator.geolocation.getCurrentPosition(resolve, reject);
+  });
+};
+
+const whereAmI = function () {
+  getPosition()
+  .then(pos => {
+      const { latitude: lat, longitude: long } = pos.coords;
+      
+      return fetch(
+        `https://geocode.xyz/${lat},${long}?geoit=json&auth=127722282185009e15876662x26378`
+        );
+      })
+    .then(responses => {
+      if (!responses.ok) throw new Error(`${responses.status}`);
+      return responses.json();
+    })
+    .then(data => {
+      if (!data.city || !data.country) throw new Error(`Data not found`);
+      
+      fetch(`https://restcountries.com/v3.1/name/${data.country}`)
+      .then(responses => {
+        if (!responses.ok) throw new Error(`${error} ${responses.status}`);
+        return responses.json();
+      })
+      .then(data => renderCountry(data[0]));
+      
+      console.log(`You are in ${data.city}, ${data.country}`);
+    })
+    .catch(err => renderError(`${err}`))
+    .finally(() => (countriesContainer.style.opacity = 1));
+  };
+  
+  whereAmI();
+  
+  */
