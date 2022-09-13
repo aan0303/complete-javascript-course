@@ -131,7 +131,6 @@ const whereAmI = function (lat, lng) {
 whereAmI(52.508, 13.381);
 whereAmI(19.037, 72.873);
 whereAmI(-33.933, 18.474);
-*/
 
 const getJSON = function (url, error = 'Something went wrong') {
   return fetch(`${url}`).then(response => {
@@ -165,5 +164,17 @@ const getCountryData = function (country) {
 };
 
 btn.addEventListener('click', function () {
-  whereAmI(52.508, 13.381);
+  getCountryData('Portugal');
 });
+
+  */
+
+console.log(`Test Start`);
+setTimeout(() => console.log(`0 sec timer`), 0);
+Promise.resolve('Resolved Promise 1').then(res => console.log(res));
+
+Promise.resolve(`Resolved promise 2`).then(res => {
+  for (let i = 0; i < 10000; i++) console.log(res);
+});
+
+console.log('Test end');
