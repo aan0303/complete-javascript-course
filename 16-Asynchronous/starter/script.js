@@ -103,6 +103,7 @@ const renderError = function (msg) {
   // countriesContainer.style.opacity = 1;
 };
 
+/*
 const whereAmI = function (lat, lng) {
   fetch(
     `https://geocode.xyz/${lat},${lng}?geoit=json&auth=127722282185009e15876662x26378`
@@ -130,6 +131,7 @@ const whereAmI = function (lat, lng) {
 whereAmI(52.508, 13.381);
 whereAmI(19.037, 72.873);
 whereAmI(-33.933, 18.474);
+*/
 
 const getJSON = function (url, error = 'Something went wrong') {
   return fetch(`${url}`).then(response => {
@@ -162,6 +164,6 @@ const getCountryData = function (country) {
     });
 };
 
-// btn.addEventListener('click', function () {
-//   whereAmI(52.508, 13.381);
-// });
+btn.addEventListener('click', function () {
+  whereAmI(52.508, 13.381);
+});
