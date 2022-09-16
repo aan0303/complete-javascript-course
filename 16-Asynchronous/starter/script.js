@@ -2,6 +2,7 @@
 
 const btn = document.querySelector('.btn-country');
 const countriesContainer = document.querySelector('.countries');
+const imgContainer = document.querySelector('.images');
 
 /*
 ///////////////////////////////////////
@@ -198,7 +199,7 @@ const wait = function (seconds) {
   return new Promise(function (resolve) {
     setTimeout(resolve, seconds * 1000);
   });
-};
+};a
 
 wait(2)
 .then(() => {
@@ -224,13 +225,13 @@ const getPosition = function () {
 
 const whereAmI = function () {
   getPosition()
-  .then(pos => {
+    .then(pos => {
       const { latitude: lat, longitude: long } = pos.coords;
-      
+
       return fetch(
         `https://geocode.xyz/${lat},${long}?geoit=json&auth=127722282185009e15876662x26378`
-        );
-      })
+      );
+    })
     .then(responses => {
       if (!responses.ok) throw new Error(`${responses.status}`);
       return responses.json();
@@ -239,18 +240,58 @@ const whereAmI = function () {
       if (!data.city || !data.country) throw new Error(`Data not found`);
       
       fetch(`https://restcountries.com/v3.1/name/${data.country}`)
-      .then(responses => {
-        if (!responses.ok) throw new Error(`${error} ${responses.status}`);
-        return responses.json();
-      })
-      .then(data => renderCountry(data[0]));
-      
+        .then(responses => {
+          if (!responses.ok) throw new Error(`${error} ${responses.status}`);
+          return responses.json();
+        })
+        .then(data => renderCountry(data[0]));
+
       console.log(`You are in ${data.city}, ${data.country}`);
     })
     .catch(err => renderError(`${err}`))
     .finally(() => (countriesContainer.style.opacity = 1));
-  };
-  
-  whereAmI();
-  
-  */
+};
+
+whereAmI();
+
+live_HeW8vJdU7UxKHlbtOzaixGsjShEX0YkcSW2V9CG0kIXfuk5OZvTqEG1cOpiNthqK
+*/
+let currImage;
+
+const wait = function (seconds) {
+  return new Promise(function (resolve) {
+    setTimeout(resolve, seconds * 1000);
+  });
+};
+
+const createImg = function (imgPath) {
+  return new Promise(function (resolve, reject) {
+    const image = document.createElement('img');
+    image.src = `${imgPath}`;
+
+    image.addEventListener('load', function () {
+      image.classList.add('images');
+      imgContainer.append(image);
+      resolve(image);
+    });
+
+    image.addEventListener('error', function () {
+      reject(new Error('Image not found'));
+    });
+  });
+};
+
+createImg(`/img/img-1.jpg`)
+  .then(img => {
+    currImage = img;
+    return wait(2);
+  })
+  .then(() => {
+    currImage.style.display = 'none';
+    return createImg(`/img/img-2.jpg`);
+  })
+  .then(img => {
+    currImage = img;
+    return wait(2);
+  })
+  .then(() => (currImage.style.display = 'none'));
