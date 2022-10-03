@@ -360,7 +360,6 @@ const get3Countries = async function (c1, c2, c3) {
 
 get3Countries('Malaysia', 'Portugal', 'India');
 
-*/
 const getJSON = function (url, error = 'Something went wrong') {
   return fetch(`${url}`).then(response => {
     if (!response.ok) throw new Error(`${error} ${response.status}`);
@@ -388,14 +387,76 @@ const timeout = function (s) {
 };
 
 // Promise.race([
-//   getJSON(`https://restcountries.com/v3.1/name/tanzania`),
-//   timeout(1),
-// ])
-//   .then(res => console.log(res))
-//   .catch(err => console.error(err));
+  //   getJSON(`https://restcountries.com/v3.1/name/tanzania`),
+  //   timeout(1),
+  // ])
+  //   .then(res => console.log(res))
+  //   .catch(err => console.error(err));
+  
+  // Promise.allSettled([
+    //   Promise.resolve('Success'),
+    //   Promise.reject(`Bruh`),
+    //   Promise.resolve(`Mom`),
+    // ]).then(res => console.log(res));
+    
+    // Promise.any([
+      //   Promise.resolve('Success'),
+      //   Promise.reject(`Bruh`),
+//   Promise.resolve(`Mom`),
+// ]).then(res => console.log(res));
+let currImage;
 
-Promise.allSettled([
-  Promise.resolve('Success'),
-  Promise.reject(`Bruh`),
-  Promise.resolve(`Mom`),
-]).then(res => console.log(res));
+const wait = function (seconds) {
+  return new Promise(function (resolve) {
+    setTimeout(resolve, seconds * 1000);
+  });
+};
+
+
+
+// createImg(`/img/img-1.jpg`)
+//   .then(img => {
+  //     currImage = img;
+  //     return wait(2);
+//   })
+//   .then(() => {
+  //     currImage.style.display = 'none';
+//     return createImg(`/img/img-2.jpg`);
+//   })
+//   .then(img => {
+//     currImage = img;
+//     return wait(2);
+//   })
+//   .then(() => (currImage.style.display = 'none'));
+
+
+*/
+
+const createImg = function (imgPath) {
+  return new Promise(function (resolve, reject) {
+    const image = document.createElement('img');
+    image.src = `${imgPath}`;
+
+    image.addEventListener('load', function () {
+      image.classList.add('images');
+      imgContainer.append(image);
+      resolve(image);
+    });
+
+    image.addEventListener('error', function () {
+      reject(new Error('Image not found'));
+    });
+  });
+};
+
+const loadAll = async function (imgArr) {
+  const imgs = await Promise.all([
+    createImg(imgArr[0]),
+    createImg(imgArr[1]),
+    createImg(imgArr[2]),
+  ]);
+
+  imgs.map(img => img.classList.add('parallel'));
+};
+
+loadAll([`img/img-1.jpg`, `img/img-2.jpg`, `img/img-3.jpg`]);
